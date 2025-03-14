@@ -158,7 +158,21 @@ export function RealtimeProvider({ children }) {
   // Examine transcription text deltas and moderate them
   function responseGuardrails(text) {
     console.log(text);
-    // TODO - Placeholder for guardrails
+    // Placeholder for more sophisticated guardrails
+    if (text.includes("TypeScript")) {
+      sendClientEvent({ type: "response.cancel" });
+      sendClientEvent({ type: "output_audio_buffer.clear" });
+      sendClientEvent({
+        type: "response.create",
+        response: {
+          instructions: `
+            You don't want to talk abotu TypeScript, politely change the subject. 
+            You can talk about other programming languages, or help you pick
+            out a color palette for a new website.
+          `,
+        },
+      });
+    }
   }
 
   const contextValue = {
