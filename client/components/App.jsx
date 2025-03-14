@@ -128,6 +128,12 @@ export default function App() {
       dataChannel.addEventListener("open", () => {
         setIsSessionActive(true);
         setEvents([]);
+        sendClientEvent({
+          type: "response.create",
+          response: {
+            instructions: "Please warmly greet the user.",
+          },
+        });
       });
     }
   }, [dataChannel]);
