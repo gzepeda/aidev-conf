@@ -88,12 +88,9 @@ export function RealtimeProvider({ children }) {
 
     setIsSessionActive(true);
 
-    // TODO - uncomment this to have the model start talking immediately
-    /* 
     setTimeout(() => {
       sendClientEvent({ type: "response.create" });
     }, 500);
-    */
   }
 
   // Toggle mute on the local audio track
