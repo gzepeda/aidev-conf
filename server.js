@@ -1,7 +1,10 @@
 import express from "express";
 import fs from "fs";
+import OpenAI from "openai";
 import { createServer as createViteServer } from "vite";
 import "dotenv/config";
+
+const client = new OpenAI();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,6 +40,9 @@ app.get("/token", async (req, res) => {
           model: "gpt-4o-realtime-preview-2024-12-17",
           instructions,
           voice: "sage",
+          input_audio_transcription: {
+            model: "whisper-1",
+          },
         }),
       },
     );
@@ -45,6 +51,33 @@ app.get("/token", async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error("Token generation error:", error);
+    res.status(500).json({ error: "Failed to generate token" });
+  }
+});
+
+app.get("/response", async (req, res) => {
+  try {
+    const modelResponse = await client.responses.create({
+      model: "gpt-4o",
+      input: req.query.input || "",
+      instructions: `
+        Give me a code snippet and brief explanation for this question. Assume
+        the question is related to the OpenAI Realtime API. Do not use markdown
+        ordered or unordered lists, just use headings.
+      `,
+      tools: [
+        {
+          type: "file_search",
+          vector_store_ids: [process.env.VECTOR_STORE_ID],
+        },
+      ],
+    });
+
+    console.log(modelResponse.output_text);
+
+    res.json({ output: modelResponse.output_text });
+  } catch (error) {
+    console.error("API Error:", error);
     res.status(500).json({ error: "Failed to generate token" });
   }
 });

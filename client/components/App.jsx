@@ -5,10 +5,44 @@ import ChatLog from "./ChatLog";
 import SessionControls from "./SessionControls";
 import ToolPanel from "./ToolPanel";
 
+const functionDescription = `
+This function will answer any and all questions about the OpenAI Realtime API.
+Before calling this function, tell the user "let me check on that for you".
+Do not attempt to answer any Realtime questions without calling the 
+answer_realtime_api_question function first. Wait until you get a response
+from the function call before continuing
+`;
+
+const sessionUpdate = {
+  type: "session.update",
+  session: {
+    tools: [
+      {
+        type: "function",
+        name: "answer_realtime_api_question",
+        description: functionDescription,
+        parameters: {
+          type: "object",
+          strict: true,
+          properties: {
+            question: {
+              type: "string",
+              description: "The question to answer about the Realtime API.",
+            },
+          },
+          required: ["question"],
+        },
+      },
+    ],
+    tool_choice: "auto",
+  },
+};
+
 export default function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [events, setEvents] = useState([]);
   const [dataChannel, setDataChannel] = useState(null);
+  const [apiOutput, setApiOutput] = useState(null);
   const [activeTab, setActiveTab] = useState("chat");
   const peerConnection = useRef(null);
   const audioElement = useRef(null);
@@ -59,6 +93,34 @@ export default function App() {
     await pc.setRemoteDescription(answer);
 
     peerConnection.current = pc;
+  }
+
+  // Ask a question to the model on the server
+  async function askQuestion(event) {
+    const { question } = JSON.parse(event.arguments);
+
+    const r = await fetch("/response?input=" + question);
+    const data = await r.json();
+    console.log("data", data);
+
+    sendClientEvent({
+      type: "conversation.item.create",
+      item: {
+        type: "function_call_output",
+        call_id: data.call_id,
+        output: JSON.stringify(data),
+      },
+    });
+
+    sendClientEvent({
+      type: "response.create",
+      response: {
+        instructions:
+          "Don't attempt to explain the answer, just say 'I've found some resources for you to consider. Does that help?'",
+      },
+    });
+
+    setApiOutput(data);
   }
 
   // Stop current session, clean up peer connection and data channel
@@ -121,7 +183,17 @@ export default function App() {
     if (dataChannel) {
       // Append new server events to the list
       dataChannel.addEventListener("message", (e) => {
-        setEvents((prev) => [JSON.parse(e.data), ...prev]);
+        const event = JSON.parse(e.data);
+        console.log("event", event);
+        setEvents((prev) => [event, ...prev]);
+
+        if (event.type === "session.created") {
+          sendClientEvent(sessionUpdate);
+        }
+
+        if (event.type === "response.function_call_arguments.done") {
+          askQuestion(event);
+        }
       });
 
       // Set session active when the data channel is opened
@@ -183,12 +255,7 @@ export default function App() {
           </section>
         </section>
         <section className="absolute top-0 w-[40%] right-0 bottom-0 p-4 pt-0 overflow-y-auto">
-          <ToolPanel
-            sendClientEvent={sendClientEvent}
-            sendTextMessage={sendTextMessage}
-            events={events}
-            isSessionActive={isSessionActive}
-          />
+          <ToolPanel apiOutput={apiOutput} isSessionActive={isSessionActive} />
         </section>
       </main>
     </>
