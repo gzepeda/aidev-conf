@@ -28,7 +28,7 @@ This application is a minimal template that uses [express](https://expressjs.com
 
 ## Using this application
 
-The `main` branch of this application contains a starting point with a minimal working example of the Realtime API, based on the [Realtime console application](https://github.com/openai/openai-realtime-console). You will be building the application for the meta use case of teaching yourself how to build with the Realtime API!
+The `step_1_start` branch of this application contains a starting point with a minimal working example of the Realtime API, based on the [Realtime console application](https://github.com/openai/openai-realtime-console). You will be building the application for the meta use case of teaching yourself how to build with the Realtime API!
 
 You will be asked to complete a series of four tutorial exercises in this repository that introduce important concepts of working with the Realtime API. Each tutorial's beginning and end states are checked into git branches. You can move to any point along the way by using `git checkout step_2_start` etc.
 
@@ -39,8 +39,9 @@ The final iteration of this application can be found on the `final` branch with 
 The base application contains a very basic voice prompt for the application, but we can do better. The initial session configuration happens when an ephemeral token is fetched from the server. Update this configuration with a more detailed voice prompt (see the example below under `Example voice prompt`), and try a different voice from the [supported list](https://platform.openai.com/docs/api-reference/realtime-sessions/create).
 
 - **Objective:** Initialize a Realtime session with a more expressive voice prompt, and another voice other than the default one currently used. Have the model start the conversation by speaking a greeting aloud.
-- **Starting branch:** `git checkout main`
+- **Starting branch:** `git checkout step_1_start`
 - **Solution branch:** `git checkout step_1_solution`
+- [What changed](https://github.com/kwhinnery-openai/aidev-conf/compare/step_1_start...step_1_solution)?
 
 **Useful resources:**
 
