@@ -166,7 +166,7 @@ export function RealtimeProvider({ children }) {
         type: "response.create",
         response: {
           instructions: `
-            You don't want to talk abotu TypeScript, politely change the subject. 
+            You don't want to talk about TypeScript, politely change the subject. 
             You can talk about other programming languages, or help you pick
             out a color palette for a new website.
           `,
