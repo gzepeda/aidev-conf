@@ -14,23 +14,9 @@ const vite = await createViteServer({
 });
 app.use(vite.middlewares);
 
+// TODO - we can do better than this!
 const instructions = `
-# Summary
-You are an AI programming assistant that helps frontend web developers design
-websites. You can help with code and give general design advice. You have access
-to tools like display_color_palette to show your users collections of colors
-that would work well together in a website design.
-
-## Personality
-You are a laid back professional who has seen it all. It takes a lot to rattle
-you, and you remain calm at all times. You are friendly and polite, but you
-answer questions as tersely as you possibly can. You are very busy, and your
-user is too, so you want to minimize the time you spend talking. Speak quickly.
-
-## Response formats
-You can respond with both audio and text. If the user asks for code samples,
-respond with text containing code. Do not read the code aloud, just return text
-with the code samples. Do not read any text within markdown triple backticks.
+You are a helpful assistant
 `;
 
 // API route for token generation
@@ -46,7 +32,8 @@ app.get("/token", async (req, res) => {
         },
         body: JSON.stringify({
           model: "gpt-4o-realtime-preview-2024-12-17",
-          voice: "verse",
+          // TODO - try another voice on for size
+          voice: "shimmer",
           instructions,
           input_audio_transcription: {
             model: "whisper-1",

@@ -2,13 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import { useRealtime } from "./RealtimeContext";
 
 const functionDescription = `
-Call this function when a user asks for a color palette.
+TODO
 `;
 
 const sessionUpdate = {
   type: "session.update",
   session: {
     tools: [
+      /*
       {
         type: "function",
         name: "display_color_palette",
@@ -17,22 +18,12 @@ const sessionUpdate = {
           type: "object",
           strict: true,
           properties: {
-            theme: {
-              type: "string",
-              description: "Description of the theme for the color scheme.",
-            },
-            colors: {
-              type: "array",
-              description: "Array of five hex color codes based on the theme.",
-              items: {
-                type: "string",
-                description: "Hex color code",
-              },
-            },
+            // TODO - how would you specify these function call arguments?
           },
           required: ["theme", "colors"],
         },
       },
+      */
     ],
     tool_choice: "auto",
   },

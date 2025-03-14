@@ -87,9 +87,13 @@ export function RealtimeProvider({ children }) {
     await peerConnection.current.setRemoteDescription(answer);
 
     setIsSessionActive(true);
+
+    // TODO - uncomment this to have the model start talking immediately
+    /* 
     setTimeout(() => {
       sendClientEvent({ type: "response.create" });
     }, 500);
+    */
   }
 
   // Toggle mute on the local audio track
@@ -157,21 +161,7 @@ export function RealtimeProvider({ children }) {
   // Examine transcription text deltas and moderate them
   function responseGuardrails(text) {
     console.log(text);
-    // Placeholder for more sophisticated guardrails
-    if (text.includes("TypeScript")) {
-      sendClientEvent({ type: "response.cancel" });
-      sendClientEvent({ type: "output_audio_buffer.clear" });
-      sendClientEvent({
-        type: "response.create",
-        response: {
-          instructions: `
-            You don't want to talk abotu TypeScript, politely change the subject. 
-            You can talk about other programming languages, or help you pick
-            out a color palette for a new website.
-          `,
-        },
-      });
-    }
+    // TODO - Placeholder for guardrails
   }
 
   const contextValue = {
