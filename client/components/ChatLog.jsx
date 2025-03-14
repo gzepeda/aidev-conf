@@ -28,6 +28,8 @@ export default function ChatLog({ events }) {
       event.type === "conversation.item.created" &&
       event.item.role &&
       event.item.role === "user" &&
+      event.item.content &&
+      event.item.content[0] &&
       event.item.content[0].text &&
       event.item.content[0].text.trim() !== ""
     ) {
@@ -37,8 +39,12 @@ export default function ChatLog({ events }) {
       };
     } else if (
       event.type === "response.done" &&
-      event.response.output[0]?.content[0]?.transcript &&
-      event.response.output[0]?.content[0]?.transcript.trim() !== ""
+      event.response.output &&
+      event.response.output[0] &&
+      event.response.output[0].content &&
+      event.response.output[0].content[0] &&
+      event.response.output[0].content[0].transcript &&
+      event.response.output[0].content[0].transcript.trim() !== ""
     ) {
       message = {
         role: "assistant",

@@ -1,19 +1,45 @@
 import { useEffect, useState } from "react";
 
+const functionDescription = `
+This function will answer any and all questions about the OpenAI Realtime API.
+`;
+
 const sessionUpdate = {
   type: "session.update",
   session: {
     tools: [
-      // TODO: add tools here
+      {
+        type: "function",
+        name: "answer_realtime_api_question",
+        description: functionDescription,
+        parameters: {
+          type: "object",
+          strict: true,
+          properties: {
+            question: {
+              type: "string",
+              description: "The question to answer about the Realtime API.",
+            },
+          },
+          required: ["question"],
+        },
+      },
     ],
     tool_choice: "auto",
   },
 };
 
 function FunctionCallOutput({ functionCallOutput }) {
-  // const { TODO } = JSON.parse(functionCallOutput.arguments);
+  const { question } = JSON.parse(functionCallOutput.arguments);
 
-  return <div className="flex flex-col gap-2"></div>;
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="text-sm text-gray-500">
+        <p>Here is the question I was asked:</p>
+        <p>{question}</p>
+      </div>
+    </div>
+  );
 }
 
 export default function ToolPanel({
@@ -39,7 +65,11 @@ export default function ToolPanel({
       mostRecentEvent.response.output
     ) {
       mostRecentEvent.response.output.forEach((output) => {
-        if (output.type === "function_call" && output.name === "TODO") {
+        if (
+          output.type === "function_call" &&
+          output.name === "answer_realtime_api_question"
+        ) {
+          setFunctionCallOutput(output);
         }
       });
     }
