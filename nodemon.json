@@ -4,6 +4,11 @@
     "*.test.js",
     "*.spec.js",
     "*.env",
-    "client/**"
-  ]
+    "*.timestamp",
+    "vite.config.js",
+    "client/**",
+    "**/*.timestamp"
+  ],
+  "watch": ["server.js"],
+  "legacyWatch": true
 }
